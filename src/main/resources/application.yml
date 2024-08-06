@@ -1,0 +1,6 @@
+app:
+  kafka:
+    producer:
+      topic: "order-topic"
+    consumer:
+      topic: "order-status-topic"
