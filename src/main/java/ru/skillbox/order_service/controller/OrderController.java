@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.skillbox.order_service.event.OrderEvent;
 import ru.skillbox.order_service.model.Order;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/order")
 @RequiredArgsConstructor
@@ -19,14 +21,14 @@ public class OrderController {
     private final KafkaTemplate<String, OrderEvent> kafkaTemplate;
 
     @Value("${app.kafka.producer.topic}")
-    private String topic;
+    private String producerTopic;
 
     @PostMapping
     public ResponseEntity<String> sendOrder(@RequestBody Order order) {
         OrderEvent event = new OrderEvent(order.getProduct(), order.getQuantity());
-        kafkaTemplate.send(topic, event);
+        kafkaTemplate.send(producerTopic, UUID.randomUUID().toString(), event);
 
-        return ResponseEntity.ok("Order received");
+        return ResponseEntity.ok("The order is sent");
     }
 
 }
